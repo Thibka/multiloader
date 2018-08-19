@@ -12,13 +12,13 @@ First create an object listing all the assets you need to load.
 ```javascript
 const Files = {
     // Textures
-    earth: {
+    dog: {
         type: 'texture',
         path: "path/to/file.jpg" // use require if webpack
     },
 
     // JSON
-    astronaut: {
+    cat: {
         type: 'json',
         path: "path/to/file.json" // use require if webpack
     }
