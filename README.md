@@ -40,11 +40,11 @@ MultiLoader.load({
 ```
 
 Files properties will be accessible like so:
-##Textures
-    `Files.dog.texture`
-##JSON files
-    `Files.cat.geometry`
-    
-    `Files.cat.materials`
+
+*   Textures
+    *   `Files.dog.texture`
+*   JSON files
+    *   `Files.cat.geometry`
+    *   `Files.cat.materials`
 
 
