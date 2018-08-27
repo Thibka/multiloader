@@ -26,7 +26,7 @@ const Files = {
 };
 ```
 
-Then pass it as a parameter when initializing the MultiLoader.
+Then use the Files object as a parameter when initializing the MultiLoader.
 
 ```javascript
 MultiLoader.load({
