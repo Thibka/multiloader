@@ -1,14 +1,19 @@
 const Files = {
     // Textures
-    earth: {
+    dog: {
         type: 'texture',
-        path: "path/to/file.jpg" // use require if webpack
+        path: 'path/to/file.jpg' // use require if webpack
+    },
+    bird: {
+        type: 'texture',
+        path: 'path/to/file.jpg', // use require if webpack
+        repeat: true
     },
 
     // JSON
-    astronaut: {
+    cat: {
         type: 'json',
-        path: "path/to/file.json" // use require if webpack
+        path: 'path/to/file.json' // use require if webpack
     }
 };
 

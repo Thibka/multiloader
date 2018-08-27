@@ -14,13 +14,14 @@ const Files = {
     // Textures
     dog: {
         type: 'texture',
-        path: "path/to/file.jpg" // use require if webpack
+        path: 'path/to/file.jpg', // use require if webpack
+        repeat: true // optional. Default is false. Set to true to use THREE.RepeatWrapping
     },
 
     // JSON
     cat: {
         type: 'json',
-        path: "path/to/file.json" // use require if webpack
+        path: 'path/to/file.json' // use require if webpack
     }
 };
 ```

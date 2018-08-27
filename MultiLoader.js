@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import Files from './Files.js';
 
 const MultiLoader = {
@@ -16,19 +17,19 @@ const MultiLoader = {
 
         // Gestion des erreurs
         if (typeof files != "object") {
-            console.error('[FileLoader] files n\'est pas un objet.');
+            console.error('[FileLoader] "files" parameter is not an object.');
             return;
         }
         if (onLoadingCallback != undefined && typeof onLoadingCallback != 'function') {
-            console.error('[FileLoader] Le paramètre "onLoading" fourni n\'est pas une fonction.');
+            console.error('[FileLoader] "onLoading" parameter is not a function.');
             return;
         }
         if (!onFinishCallback) {
-            console.error('[FileLoader] Aucun callback "onFinish" fourni.');
+            console.error('[FileLoader] "onFinish" callback must be provided.');
             return;
         }
         if (typeof onFinishCallback != 'function') {
-            console.error('[FileLoader] Le paramètre "onFinish" fourni n\'est pas une fonction.');
+            console.error('[FileLoader] "onFinish" callback is not a function.');
             return;
         }
 
@@ -43,17 +44,18 @@ const MultiLoader = {
         MultiLoader._loadFile(MultiLoader._fileNames[0]);
     },
     _loadFile: fileName => {        
-        if (Files[fileName].type == undefined) console.error("[FileLoader] Fichier sans propriété \"type\"");  
+        if (Files[fileName].type == undefined) console.error("[FileLoader] File \"type\" attribute must be 'texture' or 'json'.");  
         if (Files[fileName].type == "texture") {            
             MultiLoader.textureLoader.load(
                 Files[fileName].path,
                 function (texture) {
+                    if (Files[fileName].repeat) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                     Files[fileName].texture = texture;
                     MultiLoader._afterLoadFile();
                 }
             );
         }
-        else if (Files[fileName].type == "json") {            
+        if (Files[fileName].type == "json") {            
             MultiLoader.jsonLoader.load(
                 Files[fileName].path,
                 function (geometry, materials) {
