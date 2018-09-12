@@ -18,6 +18,12 @@ const Files = {
         repeat: true // optional. Default is false. Set to true to use THREE.RepeatWrapping
     },
 
+    // Images
+    bird: {
+        type: 'image',
+        path: 'path/to/file.jpg' // use require if webpack
+    },
+
     // JSON
     cat: {
         type: 'json',
@@ -30,7 +36,8 @@ Then use the Files object as a parameter when initializing the MultiLoader.
 
 ```javascript
 MultiLoader.load({
-    files: Files, 
+    files: Files,
+    async: true, // optional. Default is true.
     onLoading: function(percent) {
         // 'percent' returns a value between 0 and 1 
     },
@@ -44,6 +51,8 @@ Files properties will be accessible like so:
 
 *   Textures
     *   `Files.dog.texture`
+*   Images
+    *   `Files.bird.image`
 *   JSON files
     *   `Files.cat.geometry`
     *   `Files.cat.materials`
