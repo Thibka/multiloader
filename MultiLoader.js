@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-
 import Files from './Files.js';
 
 const MultiLoader = {
@@ -9,89 +8,92 @@ const MultiLoader = {
     _filesLength: 0,
     _fileNames: [],
     onLoadingCallback: false,
-    onFinishCallback: false,
-    load: (params) => {
-        let files = params.files,
-            onLoadingCallback = params.onLoading,
-            onFinishCallback = params.onFinish,
-            async = params.async || true;
+    onFinishCallback: false
+}
 
-        // Gestion des erreurs
-        if (typeof files != "object") {
-            console.error('[FileLoader] files n\'est pas un objet.');
-            return;
-        }
-        if (onLoadingCallback != undefined && typeof onLoadingCallback != 'function') {
-            console.error('[FileLoader] Le paramètre "onLoading" fourni n\'est pas une fonction.');
-            return;
-        }
-        if (!onFinishCallback) {
-            console.error('[FileLoader] Aucun callback "onFinish" fourni.');
-            return;
-        }
-        if (typeof onFinishCallback != 'function') {
-            console.error('[FileLoader] Le paramètre "onFinish" fourni n\'est pas une fonction.');
-            return;
-        }
+MultiLoader.load = params => {
+    let files = params.files,
+        onLoadingCallback = params.onLoading,
+        onFinishCallback = params.onFinish;
+    MultiLoader.async = (params.async == undefined) ? true : params.async;
 
-        // Récupération des fichiers
-        for (var i in files) {
-            MultiLoader._fileNames.push(i);
-        }
-        MultiLoader._filesLength = MultiLoader._fileNames.length;
-        if (typeof onLoadingCallback != undefined) MultiLoader.onLoadingCallback = onLoadingCallback;
-        MultiLoader.onFinishCallback = onFinishCallback;
+    // Gestion des erreurs
+    if (typeof files != "object") {
+        console.error('[FileLoader] files n\'est pas un objet.');
+        return;
+    }
+    if (onLoadingCallback != undefined && typeof onLoadingCallback != 'function') {
+        console.error('[FileLoader] Le paramètre "onLoading" fourni n\'est pas une fonction.');
+        return;
+    }
+    if (!onFinishCallback) {
+        console.error('[FileLoader] Aucun callback "onFinish" fourni.');
+        return;
+    }
+    if (typeof onFinishCallback != 'function') {
+        console.error('[FileLoader] Le paramètre "onFinish" fourni n\'est pas une fonction.');
+        return;
+    }
 
-        if (async) {
-            MultiLoader._fileNames.forEach(fileName => {
-                MultiLoader._loadFile(fileName);
-            });
-        } else {
-            MultiLoader._loadFile(MultiLoader._fileNames[0]);
-        }
-    },
-    _loadFile: fileName => {
-        if (Files[fileName].type == undefined) console.error("[FileLoader] Fichier sans propriété \"type\"");
-        if (Files[fileName].type == "texture") {
-            MultiLoader.textureLoader.load(
-                Files[fileName].path,
-                function (texture) {
-                    if (Files[fileName].repeat) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                    Files[fileName].texture = texture;
-                    MultiLoader._afterLoadFile();
-                }
-            );
-        }
-        if (Files[fileName].type == "image") {
-            let image = new Image();
-            image.addEventListener("load", function () {
-                Files[fileName].image = this;
+    // Récupération des fichiers
+    for (var i in files) {
+        MultiLoader._fileNames.push(i);
+    }
+    MultiLoader._filesLength = MultiLoader._fileNames.length;
+    if (typeof onLoadingCallback != undefined) MultiLoader.onLoadingCallback = onLoadingCallback;
+    MultiLoader.onFinishCallback = onFinishCallback;
+
+    if (MultiLoader.async) {
+        MultiLoader._fileNames.forEach(fileName => {
+            MultiLoader._loadFile(fileName);
+        });
+    } else {
+        MultiLoader._loadFile(MultiLoader._fileNames[0]);
+    }
+};
+
+MultiLoader._loadFile = fileName => {
+    if (Files[fileName].type == undefined) console.error("[FileLoader] Fichier sans propriété \"type\"");
+    if (Files[fileName].type == "texture") {
+        MultiLoader.textureLoader.load(
+            Files[fileName].path,
+            function (texture) {
+                if (Files[fileName].repeat) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                Files[fileName].texture = texture;
                 MultiLoader._afterLoadFile();
-            });
-            image.src = Files[fileName].path;
-        }
-        if (Files[fileName].type == "json") {
-            MultiLoader.jsonLoader.load(
-                Files[fileName].path,
-                function (geometry, materials) {
-                    Files[fileName].geometry = geometry;
-                    Files[fileName].materials = materials;
-                    MultiLoader._afterLoadFile();
-                }
-            );
-        }
-    },
-    _afterLoadFile() {
-        var percentageDone = MultiLoader._fileIndex / (MultiLoader._filesLength - 1); // Valeur de 0 à 1        
-        if (MultiLoader.onLoadingCallback) MultiLoader.onLoadingCallback(percentageDone);
-        else console.log("[FileLoader] " + percentageDone * 100 + "%");
+            }
+        );
+    }
+    if (Files[fileName].type == "image") {
+        let image = new Image();
+        image.addEventListener("load", function () {
+            Files[fileName].image = this;
+            MultiLoader._afterLoadFile();
+        });
+        image.src = Files[fileName].path;
+    }
+    if (Files[fileName].type == "json") {
+        MultiLoader.jsonLoader.load(
+            Files[fileName].path,
+            function (geometry, materials) {
+                Files[fileName].geometry = geometry;
+                Files[fileName].materials = materials;
+                MultiLoader._afterLoadFile();
+            }
+        );
+    }
+}
 
-        if (MultiLoader._fileIndex < MultiLoader._filesLength - 1) {
-            MultiLoader._fileIndex++;
-            MultiLoader._loadFile(MultiLoader._fileNames[MultiLoader._fileIndex]);
-        } else {
-            if (MultiLoader.onFinishCallback != false) MultiLoader.onFinishCallback();
-        }
+MultiLoader._afterLoadFile = () => {
+    var percentageDone = MultiLoader._fileIndex / (MultiLoader._filesLength - 1); // Valeur de 0 à 1        
+    if (MultiLoader.onLoadingCallback) MultiLoader.onLoadingCallback(percentageDone);
+    else console.log("[FileLoader] " + percentageDone * 100 + "%");
+
+    if (MultiLoader._fileIndex < MultiLoader._filesLength - 1) {
+        MultiLoader._fileIndex++;
+        if (!MultiLoader.async) MultiLoader._loadFile(MultiLoader._fileNames[MultiLoader._fileIndex]);
+    } else {
+        if (MultiLoader.onFinishCallback != false) MultiLoader.onFinishCallback();
     }
 }
 
