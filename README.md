@@ -1,8 +1,7 @@
 Description
 ==================
 
-The MultiLoader class allows to control the loading of textures and JSON files.
-Callbacks can be attached at the end of each file loading (useful to display the progress), and when all the assets are loaded.
+The MultiLoader class controls textures, images and JSON files loading.
 
 
 Usage
