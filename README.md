@@ -1,10 +1,15 @@
 # Description
-
 The MultiLoader class controls textures, images and JSON files loading.
 
+# Dependencies
+Depends on  
+https://www.npmjs.com/package/three  
+npm i three
+https://www.npmjs.com/package/three-obj-loader  
+npm i three-obj-loader
 
 # Usage
-First create an object listing all the assets you need to load.
+First create an object listing the assets you need to load.
 
 ```javascript
 var files = {
@@ -51,7 +56,7 @@ MultiLoader.load({
 });
 ```
 
-Files properties will be accessible like so:
+Files properties will then be accessible like so:
 
 *   Textures
     *   `MultiLoader.files.ground.texture`
