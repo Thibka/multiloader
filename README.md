@@ -4,9 +4,7 @@ The MultiLoader class controls textures, images and JSON files loading.
 # Dependencies
 Depends on  
 https://www.npmjs.com/package/three  
-npm i three
 https://www.npmjs.com/package/three-obj-loader  
-npm i three-obj-loader
 
 # Usage
 ```javascript
@@ -16,7 +14,6 @@ import MultiLoader from '@thibka/multiloader';
 First create an object listing the assets you need to load.
 
 ```javascript
-
 var files = {
     // Textures
     ground: {
@@ -75,12 +72,9 @@ Files properties will then be accessible like so:
     *   `MultiLoader.files.dog.object`
 
 
-## OBJ
-
-depend on https://www.npmjs.com/package/three-obj-loader
-
-
 ## GLTF
+
+Since GLTF models are made up of several files, they seem to be a bit more complicated to load. So these steps are to be followed.  
 - Do not use require() when declaring the path in Files.js
 ```javascript
 var files = {

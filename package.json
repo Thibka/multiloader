@@ -1,6 +1,6 @@
 {
   "name": "@thibka/multiloader",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Loading manager for Three.js textures, JSON geometries & materials, and images.",
   "main": "index.js",
   "scripts": {
