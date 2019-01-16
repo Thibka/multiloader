@@ -1,7 +1,10 @@
-// depend on https://www.npmjs.com/package/three-obj-loader
+/*
+    depends on https://www.npmjs.com/package/three
+    depends on https://www.npmjs.com/package/three-obj-loader
+    npm i three three-obj-loader
+*/
 
 import * as THREE from 'three';
-import Files from './Files.js';
 import GLTFLoader from './GLTFLoader.js';
 var OBJLoader = require('three-obj-loader');
 OBJLoader(THREE);
@@ -26,7 +29,7 @@ MultiLoader.load = params => {
 
     // Gestion des erreurs
     if (typeof files != "object") {
-        console.error('[FileLoader] files n\'est pas un objet.');
+        console.error("[FileLoader] 'files' parameter should be an object.");
         return;
     }
     if (onLoadingCallback != undefined && typeof onLoadingCallback != 'function') {
@@ -41,6 +44,8 @@ MultiLoader.load = params => {
         console.error('[FileLoader] "onFinish" parameter must be a function.');
         return;
     }
+
+    MultiLoader.files = files;
 
     // Retreiving files
     for (var i in files) {
@@ -60,55 +65,55 @@ MultiLoader.load = params => {
 };
 
 MultiLoader._loadFile = fileName => {
-    if (Files[fileName].type == undefined) console.error("[FileLoader] No \"type\" property provided.");
-    if (Files[fileName].type == "texture") {
+    if (MultiLoader.files[fileName].type == undefined) console.error("[FileLoader] No \"type\" property provided.");
+    if (MultiLoader.files[fileName].type == "texture") {
         MultiLoader.textureLoader.load(
-            Files[fileName].path,
+            MultiLoader.files[fileName].path,
             function (texture) {
-                if (Files[fileName].repeat) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                Files[fileName].texture = texture;
+                if (MultiLoader.files[fileName].repeat) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                MultiLoader.files[fileName].texture = texture;
                 MultiLoader._afterLoadFile();
             }
         );
     }
-    if (Files[fileName].type == "cubeTexture" || Files[fileName].type == "cubetexture") {
+    if (MultiLoader.files[fileName].type == "cubeTexture" || MultiLoader.files[fileName].type == "cubetexture") {
         MultiLoader.cubeTextureLoader.load(
             [
-                Files[fileName].paths[0],
-                Files[fileName].paths[1],
-                Files[fileName].paths[2],
-                Files[fileName].paths[3],
-                Files[fileName].paths[4],
-                Files[fileName].paths[5],
+                MultiLoader.files[fileName].paths[0],
+                MultiLoader.files[fileName].paths[1],
+                MultiLoader.files[fileName].paths[2],
+                MultiLoader.files[fileName].paths[3],
+                MultiLoader.files[fileName].paths[4],
+                MultiLoader.files[fileName].paths[5],
             ],
             function (texture) {
-                Files[fileName].cubeTexture = texture;
+                MultiLoader.files[fileName].cubeTexture = texture;
                 MultiLoader._afterLoadFile();
             }
         );
     }
-    if (Files[fileName].type == "image") {
+    if (MultiLoader.files[fileName].type == "image") {
         let image = new Image();
         image.addEventListener("load", function () {
-            Files[fileName].image = this;
+            MultiLoader.files[fileName].image = this;
             MultiLoader._afterLoadFile();
         });
-        image.src = Files[fileName].path;
+        image.src = MultiLoader.files[fileName].path;
     }
-    if (Files[fileName].type == "obj") {
+    if (MultiLoader.files[fileName].type == "obj") {
         MultiLoader.objLoader.load(
-            Files[fileName].path,
+            MultiLoader.files[fileName].path,
             function (object) {
-                Files[fileName].object = object;
+                MultiLoader.files[fileName].object = object;
                 MultiLoader._afterLoadFile();
             }
         );
     }
-    if (Files[fileName].type == "gltf") {
+    if (MultiLoader.files[fileName].type == "gltf") {
         MultiLoader.gltfLoader.load(
-            Files[fileName].path,
+            MultiLoader.files[fileName].path,
             function (gltf) {
-                Files[fileName].scene = gltf.scene;
+                MultiLoader.files[fileName].scene = gltf.scene;
                 MultiLoader._afterLoadFile();
             }, undefined, function(error) {
                 console.error(error);

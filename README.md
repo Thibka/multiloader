@@ -7,7 +7,7 @@ The MultiLoader class controls textures, images and JSON files loading.
 First create an object listing all the assets you need to load.
 
 ```javascript
-const Files = {
+var files = {
     // Textures
     ground: {
         type: 'texture',
@@ -40,7 +40,7 @@ Then use the Files object as a parameter when initializing the MultiLoader.
 
 ```javascript
 MultiLoader.load({
-    files: Files,
+    files: files,
     async: true, // optional. Default is true.
     onLoading: function(percent) {
         // 'percent' returns a value between 0 and 1 
@@ -54,15 +54,15 @@ MultiLoader.load({
 Files properties will be accessible like so:
 
 *   Textures
-    *   `Files.ground.texture`
+    *   `MultiLoader.files.ground.texture`
 *   CubeTextures
-    *   `Files.skybox.cubeTexture`
+    *   `MultiLoader.files.skybox.cubeTexture`
 *   Images
-    *   `Files.bird.image`
+    *   `MultiLoader.files.bird.image`
 *   GLTF
-    *   `Files.cat.scene`
+    *   `MultiLoader.files.cat.scene`
 *   OBJ
-    *   `Files.dog.object`
+    *   `MultiLoader.files.dog.object`
 
 
 ## OBJ
@@ -73,7 +73,7 @@ depend on https://www.npmjs.com/package/three-obj-loader
 ## GLTF
 - Do not use require() when declaring the path in Files.js
 ```javascript
-const Files = {
+var files = {
     landscape: { type: 'gltf', path: '../../gltf/scene.gltf' },
 };
 ```
