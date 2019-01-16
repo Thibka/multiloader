@@ -9,9 +9,14 @@ https://www.npmjs.com/package/three-obj-loader
 npm i three-obj-loader
 
 # Usage
+```javascript
+import MultiLoader from '@thibka/multiloader';
+```
+
 First create an object listing the assets you need to load.
 
 ```javascript
+
 var files = {
     // Textures
     ground: {
