@@ -1,0 +1,23 @@
+{
+  "name": "@thibka/multiloader",
+  "version": "1.0.0",
+  "description": "Loading manager for Three.js textures, JSON geometries & materials, and images.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thibka/multiloader.git"
+  },
+  "keywords": [
+    "threejs",
+    "loader"
+  ],
+  "author": "thibka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thibka/multiloader/issues"
+  },
+  "homepage": "https://github.com/thibka/multiloader#readme"
+}

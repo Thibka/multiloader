@@ -1,9 +1,16 @@
+// depend on https://www.npmjs.com/package/three-obj-loader
+
 import * as THREE from 'three';
 import Files from './Files.js';
+import GLTFLoader from './GLTFLoader.js';
+var OBJLoader = require('three-obj-loader');
+OBJLoader(THREE);
 
 const MultiLoader = {
     textureLoader: new THREE.TextureLoader(),
-    jsonLoader: new THREE.JSONLoader(),
+    objLoader: new THREE.OBJLoader(),
+    gltfLoader: new GLTFLoader(),
+    cubeTextureLoader: new THREE.CubeTextureLoader(),
     _fileIndex: 0,
     _filesLength: 0,
     _fileNames: [],
@@ -23,7 +30,7 @@ MultiLoader.load = params => {
         return;
     }
     if (onLoadingCallback != undefined && typeof onLoadingCallback != 'function') {
-        console.error('[FileLoader] Le paramètre "onLoading" fourni n\'est pas une fonction.');
+        console.error('[FileLoader] "onLoading" parameter must be a function.');
         return;
     }
     if (!onFinishCallback) {
@@ -31,11 +38,11 @@ MultiLoader.load = params => {
         return;
     }
     if (typeof onFinishCallback != 'function') {
-        console.error('[FileLoader] Le paramètre "onFinish" fourni n\'est pas une fonction.');
+        console.error('[FileLoader] "onFinish" parameter must be a function.');
         return;
     }
 
-    // Récupération des fichiers
+    // Retreiving files
     for (var i in files) {
         MultiLoader._fileNames.push(i);
     }
@@ -53,13 +60,29 @@ MultiLoader.load = params => {
 };
 
 MultiLoader._loadFile = fileName => {
-    if (Files[fileName].type == undefined) console.error("[FileLoader] Fichier sans propriété \"type\"");
+    if (Files[fileName].type == undefined) console.error("[FileLoader] No \"type\" property provided.");
     if (Files[fileName].type == "texture") {
         MultiLoader.textureLoader.load(
             Files[fileName].path,
             function (texture) {
                 if (Files[fileName].repeat) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                 Files[fileName].texture = texture;
+                MultiLoader._afterLoadFile();
+            }
+        );
+    }
+    if (Files[fileName].type == "cubeTexture" || Files[fileName].type == "cubetexture") {
+        MultiLoader.cubeTextureLoader.load(
+            [
+                Files[fileName].paths[0],
+                Files[fileName].paths[1],
+                Files[fileName].paths[2],
+                Files[fileName].paths[3],
+                Files[fileName].paths[4],
+                Files[fileName].paths[5],
+            ],
+            function (texture) {
+                Files[fileName].cubeTexture = texture;
                 MultiLoader._afterLoadFile();
             }
         );
@@ -72,20 +95,30 @@ MultiLoader._loadFile = fileName => {
         });
         image.src = Files[fileName].path;
     }
-    if (Files[fileName].type == "json") {
-        MultiLoader.jsonLoader.load(
+    if (Files[fileName].type == "obj") {
+        MultiLoader.objLoader.load(
             Files[fileName].path,
-            function (geometry, materials) {
-                Files[fileName].geometry = geometry;
-                Files[fileName].materials = materials;
+            function (object) {
+                Files[fileName].object = object;
                 MultiLoader._afterLoadFile();
+            }
+        );
+    }
+    if (Files[fileName].type == "gltf") {
+        MultiLoader.gltfLoader.load(
+            Files[fileName].path,
+            function (gltf) {
+                Files[fileName].scene = gltf.scene;
+                MultiLoader._afterLoadFile();
+            }, undefined, function(error) {
+                console.error(error);
             }
         );
     }
 }
 
 MultiLoader._afterLoadFile = () => {
-    var percentageDone = MultiLoader._fileIndex / (MultiLoader._filesLength - 1); // Valeur de 0 à 1        
+    var percentageDone = MultiLoader._fileIndex / (MultiLoader._filesLength - 1); // between 0 and 1       
     if (MultiLoader.onLoadingCallback) MultiLoader.onLoadingCallback(percentageDone);
     else console.log("[FileLoader] " + percentageDone * 100 + "%");
 
