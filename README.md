@@ -1,3 +1,5 @@
+<span style="border: 1px solid #e0c434; background: #f7e483; color: #b39d30">This package is no longer maintained and should not be used. New project here: https://www.npmjs.com/package/@thibka/three-multiloader</span>.
+
 # Description
 The MultiLoader class controls textures, images and JSON files loading.
 
